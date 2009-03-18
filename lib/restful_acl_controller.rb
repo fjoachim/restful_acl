@@ -73,9 +73,10 @@ module RestfulAclController
       def get_parent_from_request_uri(child_klass)
         parent_klass = child_klass.mom.to_s
         bits         = request.request_uri.split('/')
-        parent_id    = bits.at(bits.index(parent_klass.pluralize) + 1)
+        parent_index = bits.index(parent_klass.pluralize)
+        parent_id    = parent_index.nil? ? nil : bits.at(parent_index + 1)
 
-        parent_klass.classify.constantize.find(parent_id)
+        parent_klass.classify.constantize.find(parent_id) rescue nil
       end
 
       def administrator?
