@@ -87,7 +87,10 @@ module RestfulAclController
         logger.info("[RESTful_ACL] Permission denied to %s at %s for %s" %
         [(logged_in? ? current_user.login : 'guest'), Time.now, request.request_uri])
 
-        redirect_to denied_url
+        respond_to do |format|
+          format.html { redirect_to denied_url }
+          format.xml  { render :xml => { :error => "Permission denied."}.to_xml(:root => "errors"), :status => :forbidden }
+        end
       end
 
       def routing_error
