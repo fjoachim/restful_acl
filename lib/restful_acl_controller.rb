@@ -34,11 +34,14 @@ module RestfulAclController
           else check_non_restful_route(current_user, klass, object, parent)
         end
 
+      rescue ActiveRecord::ActiveRecordError => e
+        raise e
       rescue NoMethodError => e
         # Misconfiguration: A RESTful_ACL specific method is missing.
         raise_error(klass, e)
-      rescue
+      rescue Exception => e
         # Failsafe: If any funny business is going on, log and redirect
+        logger.debug { e.message }
         routing_error
       end
     end
